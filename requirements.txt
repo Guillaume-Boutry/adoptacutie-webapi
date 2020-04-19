@@ -1,3 +1,6 @@
 connexion == 2.6.0
 python_dateutil == 2.6.0
+pymongo==3.10.1
+flask-injector==0.12.3
+swagger-ui-bundle
 setuptools >= 21.0.0
