@@ -4,6 +4,7 @@ import connexion
 
 from swagger_server import encoder
 from flask_injector import FlaskInjector
+from flask_cors import CORS
 from injector import Binder, singleton, Injector
 from .services import PetService
 
@@ -22,6 +23,7 @@ def main():
     app.app.url_map.strict_slashes = False
     app.add_api('swagger.yaml', arguments={'title': 'AdoptACutie'}, pythonic_params=True)
     FlaskInjector(app=app.app, modules=[configure])
+    CORS(app=app.app)
     app.run(port=8080)
 
 
