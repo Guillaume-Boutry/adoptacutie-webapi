@@ -1,5 +1,6 @@
 import connexion
 import six
+from functools import wraps
 
 from swagger_server.models.api_response import ApiResponse  # noqa: E501
 from swagger_server.models.pet import Pet  # noqa: E501
@@ -11,7 +12,17 @@ from bson.json_util import dumps
 
 from connexion import NoContent
 
+def catch_ex(func):
+    @wraps(func)
+    def wrapped(*args, **kwargs):
+        try:
+            return func(*args, **kwargs)
+        except Exception as e:
+            return {"error": str(e)}, 400
+    return wrapped
+
 @inject
+@catch_ex
 def add_pet(body, pet_service: PetService):  # noqa: E501
     """Add new pet to service
 
@@ -29,6 +40,7 @@ def add_pet(body, pet_service: PetService):  # noqa: E501
     return {"error": "Unserializable"}, 405
 
 @inject
+@catch_ex
 def delete_pet(pet_id, pet_service: PetService):  # noqa: E501
     """Deletes a pet
 
@@ -46,6 +58,7 @@ def delete_pet(pet_id, pet_service: PetService):  # noqa: E501
         return NoContent, 404
 
 @inject
+@catch_ex
 def get_pet_by_id(pet_id:int , pet_service: PetService):  # noqa: E501
     """Find pet by ID
 
@@ -62,6 +75,7 @@ def get_pet_by_id(pet_id:int , pet_service: PetService):  # noqa: E501
     return Pet.from_dict(pet)
 
 @inject
+@catch_ex
 def get_pets(pet_service: PetService):  # noqa: E501
     """Get list of pets
 
@@ -72,7 +86,7 @@ def get_pets(pet_service: PetService):  # noqa: E501
     """
     return pet_service.find_all()
 
-
+@catch_ex
 def predict_adoption_speed(pet_id):  # noqa: E501
     """get an animal prediction
 
@@ -86,6 +100,7 @@ def predict_adoption_speed(pet_id):  # noqa: E501
     return 1
 
 @inject
+@catch_ex
 def update_pet(body, pet_service: PetService):  # noqa: E501
     """Update an existing pet
 
@@ -102,7 +117,7 @@ def update_pet(body, pet_service: PetService):  # noqa: E501
         return NoContent, (200 if exists else 201)
     return {"error": "Unserializable"}, 405
 
-
+@catch_ex
 def upload_file(pet_id, additional_metadata=None, file=None):  # noqa: E501
     """uploads an image
 
