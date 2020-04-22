@@ -23,7 +23,6 @@ class Category(Model):
     _2 = "2"
     _3 = "3"
     _4 = "4"
-    _5 = "5"
     def __init__(self):  # noqa: E501
         """Category - a model defined in Swagger
 

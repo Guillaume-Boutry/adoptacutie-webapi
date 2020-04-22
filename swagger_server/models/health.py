@@ -20,6 +20,7 @@ class Health(Model):
     """
     _1 = "1"
     _2 = "2"
+    _3 = "3"
     def __init__(self):  # noqa: E501
         """Health - a model defined in Swagger
 
