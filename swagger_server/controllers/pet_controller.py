@@ -2,7 +2,7 @@ import connexion
 import six
 from functools import wraps
 
-from swagger_server.models.api_response import ApiResponse  # noqa: E501
+from swagger_server.models.api_response import ApiResponse
 from swagger_server.models.pet import Pet  # noqa: E501
 from swagger_server import util
 
