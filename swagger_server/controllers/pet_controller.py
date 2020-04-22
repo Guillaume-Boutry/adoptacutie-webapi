@@ -7,7 +7,7 @@ from swagger_server.models.pet import Pet  # noqa: E501
 from swagger_server import util
 
 from flask_injector import inject
-from ..services import PetService
+from ..services import PetService, PredictService
 from bson.json_util import dumps
 
 from connexion import NoContent
@@ -87,7 +87,7 @@ def get_pets(pet_service: PetService):  # noqa: E501
     return pet_service.find_all()
 
 @catch_ex
-def predict_adoption_speed(pet_id):  # noqa: E501
+def predict_adoption_speed(pet_id: int, pet_service: PetService, predict_service: PredictService):  # noqa: E501
     """get an animal prediction
 
      # noqa: E501
@@ -97,7 +97,16 @@ def predict_adoption_speed(pet_id):  # noqa: E501
 
     :rtype: None
     """
-    return 1
+
+    pet = pet_service.find_by_id(pet_id)
+    if not pet:
+        return  {"error": "Not found"}, 404
+    pet = Pet.from_dict(pet)
+    prediction = predict_service.predict(pet)
+    pet.adoption_speed = prediction
+    if pet_service.update_or_create(pet.to_dict()):
+        return pet.adoption_speed
+    return {"error": "Error while updating pet"}, 500
 
 @inject
 @catch_ex

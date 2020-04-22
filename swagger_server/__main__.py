@@ -6,12 +6,17 @@ from swagger_server import encoder
 from flask_injector import FlaskInjector
 from flask_cors import CORS
 from injector import Binder, singleton, Injector
-from .services import PetService
+from .services import PetService, PredictService
 
 def configure(binder: Binder) -> Binder:
     binder.bind(
         PetService,
         to=PetService(),
+        scope=singleton
+    )
+    binder.bind(
+        PredictService,
+        to=PredictService(),
         scope=singleton
     )
 

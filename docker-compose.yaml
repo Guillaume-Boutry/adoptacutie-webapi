@@ -17,6 +17,9 @@ services:
       MONGO_USERNAME: adoptacutie
       MONGO_DATABASE: adoptacutie
       MONGO_PASSWORD: NicePasswordM8
+    volumes:
+      - ./model.h5:/model/model.h5
+      - ./test:/tmp/test
   database:
     image: mongo
     restart: always
