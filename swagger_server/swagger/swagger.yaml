@@ -23,6 +23,32 @@ paths:
       - pet
       summary: Get list of pets
       operationId: get_pets
+      parameters:
+      - name: offset
+        in: query
+        description: The number of items to skip before starting to collect the result
+          set
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: integer
+      - name: limit
+        in: query
+        description: The numbers of items to return
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: integer
+      - name: no_photo
+        in: query
+        description: Get photos of not
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: boolean
       responses:
         "405":
           description: Invalid input
@@ -318,7 +344,7 @@ components:
       example:
         maturitySize: 2
         gender: Male
-        fee: 4.1456080298839363962315474054776132106781005859375
+        fee: 4.145608029883936
         animalType: Cat
         health: 3
         photo: photo

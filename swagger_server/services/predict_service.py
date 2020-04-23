@@ -36,8 +36,6 @@ class PredictService:
                 Health = pet.health,
                 Fee = pet.fee)
             pet_to_test = pd.DataFrame(pet_to_test, index = [0])
-            with open('/tmp/test', 'w') as fh:
-                fh.write(str(pet_to_test))
             test = np.array(pet_to_test, dtype=np.float)
             test = tf.keras.utils.normalize(
                 test, axis=-1, order=1

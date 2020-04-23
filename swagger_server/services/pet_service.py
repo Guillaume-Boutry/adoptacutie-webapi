@@ -36,9 +36,12 @@ class PetService:
             self.instance[self.database][COLLECTION].create_index('id', unique=True)
         return self.instance[self.database]
 
-    def find_all(self, query = None) -> list:
+    def find_all(self, offset = 0, limit = 0, no_photo = False) -> list:
         db = self.connection()
-        pets = db[COLLECTION].find(query if query is not None else {}, {'_id': False})
+        display_dict = {'_id': False}
+        if no_photo:
+            display_dict["photo"] = False
+        pets = db[COLLECTION].find({}, display_dict).skip(offset).limit(limit)
         return pets
 
     def create(self, obj: dict) -> dict:

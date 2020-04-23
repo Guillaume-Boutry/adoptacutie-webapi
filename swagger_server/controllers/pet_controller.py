@@ -76,7 +76,7 @@ def get_pet_by_id(pet_id:int , pet_service: PetService):  # noqa: E501
 
 @inject
 @catch_ex
-def get_pets(pet_service: PetService):  # noqa: E501
+def get_pets(pet_service: PetService, offset:int =0, limit:int =50, no_photo:bool =False):  # noqa: E501
     """Get list of pets
 
      # noqa: E501
@@ -84,7 +84,7 @@ def get_pets(pet_service: PetService):  # noqa: E501
 
     :rtype: None
     """
-    return [Pet.from_dict(res) for res in pet_service.find_all()]
+    return [Pet.from_dict(res) for res in pet_service.find_all(offset = offset, limit = limit, no_photo = no_photo)]
 
 @catch_ex
 def predict_adoption_speed(pet_id: int, pet_service: PetService, predict_service: PredictService):  # noqa: E501
