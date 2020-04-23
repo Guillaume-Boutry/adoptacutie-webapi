@@ -84,7 +84,7 @@ def get_pets(pet_service: PetService):  # noqa: E501
 
     :rtype: None
     """
-    return pet_service.find_all()
+    return [Pet.from_dict(res) for res in pet_service.find_all()]
 
 @catch_ex
 def predict_adoption_speed(pet_id: int, pet_service: PetService, predict_service: PredictService):  # noqa: E501
@@ -104,8 +104,8 @@ def predict_adoption_speed(pet_id: int, pet_service: PetService, predict_service
     pet = Pet.from_dict(pet)
     prediction = predict_service.predict(pet)
     pet.adoption_speed = prediction
-    if pet_service.update_or_create(pet.to_dict()):
-        return pet.adoption_speed
+    if pet_service.update_adoptionspeed(pet.id, prediction):
+        return prediction
     return {"error": "Error while updating pet"}, 500
 
 @inject

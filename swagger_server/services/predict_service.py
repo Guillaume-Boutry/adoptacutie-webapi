@@ -6,6 +6,7 @@ import tensorflow as tf
 
 import pandas as pd
 import numpy as np
+import sys
 
 class PredictService:
     def __init__(self):
@@ -16,7 +17,7 @@ class PredictService:
         else:
             print("No model to predict")
             self.ready = False
-
+            sys.exit(1)
     def predict(self, pet: Pet):
         if self.ready:
             pet_to_test = OrderedDict(Type= 1 if pet.animal_type == Type.DOG else 2,
@@ -35,6 +36,8 @@ class PredictService:
                 Health = pet.health,
                 Fee = pet.fee)
             pet_to_test = pd.DataFrame(pet_to_test, index = [0])
+            with open('/tmp/test', 'w') as fh:
+                fh.write(str(pet_to_test))
             test = np.array(pet_to_test, dtype=np.float)
             test = tf.keras.utils.normalize(
                 test, axis=-1, order=1

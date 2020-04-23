@@ -13,11 +13,6 @@ import json
 
 COLLECTION = "pets"
 
-def to_json(func):
-    def wrapped(*args, **kwargs):
-        json_obj = json.loads(dumps(func(*args, **kwargs)))
-        return json_obj
-    return wrapped
 
 class PetService:
     def __init__(self):
@@ -41,7 +36,6 @@ class PetService:
             self.instance[self.database][COLLECTION].create_index('id', unique=True)
         return self.instance[self.database]
 
-    @to_json
     def find_all(self, query = None) -> list:
         db = self.connection()
         pets = db[COLLECTION].find(query if query is not None else {}, {'_id': False})
@@ -78,12 +72,16 @@ class PetService:
         deleted_result = db[COLLECTION].delete_one({'id': pet_id})
         return deleted_result.deleted_count == 1
 
-    @to_json
-    def find_by_id(self, pet_id: int) -> list:
+    def find_by_id(self, pet_id: int) -> dict:
         db = self.connection()
         return db[COLLECTION].find_one({'id': pet_id}, {'_id': False})
 
     def update_or_create(self, pet: dict) -> bool:
         db = self.connection()
         update_result = db[COLLECTION].replace_one({'id': pet.get('id')}, pet, upsert=True)
+        return update_result.matched_count == 1
+
+    def update_adoptionspeed(self, pet_id: int, adoption_speed: int) -> bool:
+        db = self.connection()
+        update_result = db[COLLECTION].update_one({'id': pet_id}, {"$set": {"adoptionSpeed": adoption_speed}}, upsert=True)
         return update_result.matched_count == 1
